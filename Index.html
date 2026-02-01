@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Pfand Wars 0.1</title>
+<body>
+  <h1>Pfand Wars</h1>
+  <div id="pfand">Pfand: 0</div>
+  <div id="hunger">Hunger: 100</div>
+  <button onclick="collect()">Sammle Dosen</button>
+  <button onclick="travel()">Reise zum Festival</button>
+<script>
+let pfand=0, hunger=100;
+function collect(){pfand+=Math.floor(Math.random()*3)+1; hunger-=5; update();}
+function travel(){if(pfand>=50){alert("Festival erreicht!");}else{alert("Brauche 50 Pfand für Ticket");}}
+function update(){
+  document.getElementById('pfand').textContent="Pfand: "+pfand;
+  document.getElementById('hunger').textContent="Hunger: "+hunger;
+  if(hunger<=0){alert("Du bist verhungert – Game Over"); location.reload();}
+}
+setInterval(()=>{hunger--; update();},5000);
+</script>
