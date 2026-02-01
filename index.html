@@ -16,4 +16,25 @@ function update(){
   if(hunger<=0){alert("Du bist verhungert – Game Over"); location.reload();}
 }
 setInterval(()=>{hunger--; update();},5000);
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDPBladG2D1YNjulqP1Lno2Pu3xOqa0AFI",
+  authDomain: "pfand-wars.firebaseapp.com",
+  projectId: "pfand-wars",
+  storageBucket: "pfand-wars.firebasestorage.app",
+  messagingSenderId: "219073213670",
+  appId: "1:219073213670:web:4f25af0f304429d5a43727",
+  measurementId: "G-88SGTNYX0W"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 </script>
