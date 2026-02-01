@@ -2,148 +2,31 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Pfand Wars 0.3</title>
+  <title>Pfand Wars 0.6</title>
   <style>
-    body{font-family:system-ui;background:#222;color:#eee;text-align:center;margin-top:6vh}
-    button{padding:10px 20px;margin:6px;font-size:1em}
-    #inv{margin-top:10px;font-size:0.9em;color:#aaa}
-    #log{margin:15px auto;width:320px;height:100px;background:#111;color:#0f0;overflow-y:auto;text-align:left;font-size:0.85em;padding:5px}
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    body{font-family:'Press Start 2P',cursive;background:#111;color:#eee;text-align:center;margin-top:4vh;font-size:10px}
+    h1{font-size:18px;margin:8px 0 12px;letter-spacing:2px}
+    #stats{font-size:11px;margin-bottom:10px}
+    button{font-family:inherit;font-size:10px;padding:8px 16px;margin:4px;border:2px outset #555;background:#333;color:#0f0;cursor:pointer}
+    button:active{border:inset}
+    #inv{font-size:9px;margin-top:8px;color:#aaa}
+    #log{margin:10px auto 0;width:340px;height:90px;background:#000;color:#0f0;overflow-y:auto;text-align:left;font-size:9px;padding:4px;border:1px solid #0f0}
+    #slot{display:none;margin-top:10px}
+    .pixel{width:32px;height:32px;image-rendering:pixelated;vertical-align:middle}
+    @keyframes wiggle{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}
+    .wigg{animation:wiggle .2s infinite}
   </style>
 </head>
 <body>
   <h1>Pfand Wars</h1>
-  <div id="pfand">Pfand: 0</div>
-  <div id="hunger">Hunger: 100</div>
+  <div id="stats">
+    <div id="pfand">Pfand: 0</div>
+    <div id="hunger">Hunger: 100</div>
+    <div id="passive">Passiv: 0/min</div>
+  </div>
 
-  <button onclick="collect()">Sammle Dosen</button>
-  <button onclick="travel()">Reise zum Festival</button>
-  <button onclick="explore()">Erkunde Straße</button>
-
-  <!-- Item-Shop -->
-  <hr>
-  <h2>Shop</h2>
-  <button onclick="buy('detector')">Dosen-Detektor 15 Pfand</button>
-  <button onclick="buy('sparkle')">Glitzer-Steine 10 Pfand</button>
-  <button onclick="buy('caravan')">Wohnwagen 100 Pfand</button>
-  <div id="inv"></div>
-
-  <!-- Boss-Log -->
-  <div id="log"></div>
-
-<script type="module">
-// ---------- Firebase ----------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, orderBy, limit, query } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDPBladG2D1YNjulqP1Lno2Pu3xOqa0AFI",
-  authDomain: "pfand-wars.firebaseapp.com",
-  projectId: "pfand-wars",
-  storageBucket: "pfand-wars.firebasestorage.app",
-  messagingSenderId: "219073213670",
-  appId: "1:219073213670:web:4f25af0f304429d5a43727",
-  measurementId: "G-88SGTNYXow"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ---------- Spiel ----------
-let pfand = 0, hunger = 100, detector = 0, sparkle = 0, caravan = 0;
-
-window.collect = function () {
-  const found = Math.floor(Math.random() * 3) + 1 + (detector > 0 ? 1 : 0);
-  pfand += found;
-  hunger -= 5;
-  log(`+${found} Pfand`);
-  update();
-};
-
-window.travel = function () {
-  if (pfand >= 50) {
-    alert("Festival erreicht!");
-    saveHighscore(pfand);
-  } else {
-    alert("Brauche 50 Pfand für Ticket");
-  }
-};
-
-window.explore = function () {
-  // 30 % Chance auf Rentnerin-Boss
-  if (Math.random() < 0.3) {
-    bossFight();
-  } else {
-    const found = Math.floor(Math.random() * 5) + 1;
-    pfand += found;
-    log(`Erkundung: +${found} Pfand`);
-    update();
-  }
-};
-
-// ---------- Boss ----------
-function bossFight() {
-  log("RENTNERIN BOSS erscheint!");
-  const playerRoll = Math.floor(Math.random() * 6) + 1 + sparkle;
-  const bossRoll = Math.floor(Math.random() * 6) + 3;
-  log(`Du würfelst: ${playerRoll} – Rentnerin: ${bossRoll}`);
-  if (playerRoll >= bossRoll) {
-    const loot = 10 + Math.floor(Math.random() * 11);
-    pfand += loot;
-    log(`Sieg! +${loot} Pfand`);
-  } else {
-    hunger -= 10;
-    log("Niederlage – 10 Hunger");
-  }
-  update();
-}
-
-// ---------- Shop ----------
-window.buy = function (what) {
-  const prices = { detector: 15, sparkle: 10, caravan: 100 };
-  if (pfand < prices[what]) { alert("Zu wenig Pfand!"); return; }
-  pfand -= prices[what];
-  if (what === 'detector') detector++;
-  if (what === 'sparkle') sparkle++;
-  if (what === 'caravan') caravan++;
-  updateInv();
-  update();
-};
-
-// ---------- UI ----------
-function update() {
-  document.getElementById('pfand').textContent = "Pfand: " + pfand;
-  document.getElementById('hunger').textContent = "Hunger: " + hunger;
-  if (hunger <= 0) { alert("Du bist verhungert – Game Over"); location.reload(); }
-}
-
-function updateInv() {
-  document.getElementById('inv').textContent =
-    `Detektor: ${detector} | Glitzer: ${sparkle} | Wohnwagen: ${caravan}`;
-}
-
-function log(text) {
-  const box = document.getElementById('log');
-  box.textContent += text + "\n";
-  box.scrollTop = box.scrollHeight;
-}
-
-setInterval(() => { hunger--; update(); }, 5000);
-
-// ---------- Leaderboard ----------
-async function saveHighscore(score) {
-  const name = prompt("Highscore! Namen eingeben:") || "Anonym";
-  await addDoc(collection(db, "scores"), { name, score, ts: Date.now() });
-  showLeaderboard();
-}
-
-async function showLeaderboard() {
-  const q = query(collection(db, "scores"), orderBy("score", "desc"), limit(10));
-  const snap = await getDocs(q);
-  let board = "Leaderboard:\n";
-  snap.forEach((doc, i) => {
-    board += `${i + 1}. ${doc.data().name} – ${doc.data().score}\n`;
-  });
-  alert(board);
-}
-</script>
-</body>
-</html>
+  <!-- Aktionen -->
+  <button class="wigg" onclick="collect()">
+    <img class="pixel" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGBSURBVEiJtZY9SwNBEIafgwQLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJ
+      
