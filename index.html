@@ -2,31 +2,24 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Pfand Wars 0.6</title>
+  <title>Pfand Wars 0.9</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    body{font-family:'Press Start 2P',cursive;background:#111;color:#eee;text-align:center;margin-top:4vh;font-size:10px}
-    h1{font-size:18px;margin:8px 0 12px;letter-spacing:2px}
-    #stats{font-size:11px;margin-bottom:10px}
-    button{font-family:inherit;font-size:10px;padding:8px 16px;margin:4px;border:2px outset #555;background:#333;color:#0f0;cursor:pointer}
-    button:active{border:inset}
-    #inv{font-size:9px;margin-top:8px;color:#aaa}
-    #log{margin:10px auto 0;width:340px;height:90px;background:#000;color:#0f0;overflow-y:auto;text-align:left;font-size:9px;padding:4px;border:1px solid #0f0}
-    #slot{display:none;margin-top:10px}
-    .pixel{width:32px;height:32px;image-rendering:pixelated;vertical-align:middle}
-    @keyframes wiggle{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}100%{transform:rotate(-2deg)}}
-    .wigg{animation:wiggle .2s infinite}
+    body{font-family:'Press Start 2P',cursive;background:#0a0a0a;color:#eee;margin:0;font-size:9px}
+    a{color:#0f0;text-decoration:none}a:hover{color:#fff}
+    table.main{border-collapse:collapse;width:760px;margin:20px auto;background:#111;border:2px solid #444}
+    td.header{background:#222;border:1px solid #555;padding:6px;color:#0ff;font-size:10px}
+    td.box{border:1px solid #444;padding:6px;vertical-align:top}
+    #shout{height:100px;overflow-y:auto;background:#000;border:1px solid #0f0;color:#0f0;padding:4px}
+    .cooldown{font-size:8px;color:#fa0}
+    .pixel{width:16px;height:16px;image-rendering:pixelated}
   </style>
 </head>
 <body>
-  <h1>Pfand Wars</h1>
-  <div id="stats">
-    <div id="pfand">Pfand: 0</div>
-    <div id="hunger">Hunger: 100</div>
-    <div id="passive">Passiv: 0/min</div>
-  </div>
+<table class="main">
+  <tr><td class="header" colspan="3">◆ PFAND WARS ◆ 8-Bit Edition</td></tr>
 
-  <!-- Aktionen -->
-  <button class="wigg" onclick="collect()">
-    <img class="pixel" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGBSURBVEiJtZY9SwNBEIafgwQLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJCG1sLwcJ
-      
+  <tr>
+    <td class="box" width="220">
+      <b>Stats</b><br>
+      <img class="pixel" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAACSSURBVDiNpZOxDcJADEXP+w9iI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI0Zio0ZiI
