@@ -2,20 +2,28 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Pfand Wars 0.1</title>
+  <title>Pfand Wars 0.2</title>
   <style>
-    body{font-family:system-ui;background:#222;color:#eee;text-align:center;margin-top:10vh}
-    button{padding:10px 20px;margin:8px;font-size:1.1em}
-    #leader{margin-top:20px;font-size:0.9em}
+    body{font-family:system-ui;background:#222;color:#eee;text-align:center;margin-top:8vh}
+    button{padding:10px 20px;margin:6px;font-size:1em}
+    #inv{margin-top:10px;font-size:0.9em;color:#aaa}
   </style>
 </head>
 <body>
   <h1>Pfand Wars</h1>
   <div id="pfand">Pfand: 0</div>
   <div id="hunger">Hunger: 100</div>
+
   <button onclick="collect()">Sammle Dosen</button>
   <button onclick="travel()">Reise zum Festival</button>
-  <div id="leader"></div>
+
+  <!-- Item-Shop -->
+  <hr>
+  <h2>Shop</h2>
+  <button onclick="buy('detector')">Dosen-Detektor 15 Pfand</button>
+  <button onclick="buy('sparkle')">Glitzer-Steine 10 Pfand</button>
+  <button onclick="buy('caravan')">Wohnwagen 100 Pfand</button>
+  <div id="inv"></div>
 
 <script type="module">
 // ---------- Firebase ----------
@@ -35,10 +43,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ---------- Spiel ----------
-let pfand = 0, hunger = 100;
+let pfand = 0, hunger = 100, detector = 0, sparkle = 0, caravan = 0;
 
 window.collect = function () {
-  pfand += Math.floor(Math.random() * 3) + 1;
+  // Detektor verhindert manchmal Leer-Dosen
+  const found = Math.floor(Math.random() * 3) + 1 + (detector > 0 ? 1 : 0);
+  pfand += found;
   hunger -= 5;
   update();
 };
@@ -52,19 +62,29 @@ window.travel = function () {
   }
 };
 
+window.buy = function (what) {
+  const prices = { detector: 15, sparkle: 10, caravan: 100 };
+  if (pfand < prices[what]) { alert("Zu wenig Pfand!"); return; }
+  pfand -= prices[what];
+  if (what === 'detector') detector++;
+  if (what === 'sparkle') sparkle++;
+  if (what === 'caravan') caravan++;
+  updateInv();
+  update();
+};
+
 function update() {
   document.getElementById('pfand').textContent = "Pfand: " + pfand;
   document.getElementById('hunger').textContent = "Hunger: " + hunger;
-  if (hunger <= 0) {
-    alert("Du bist verhungert – Game Over");
-    location.reload();
-  }
+  if (hunger <= 0) { alert("Du bist verhungert – Game Over"); location.reload(); }
 }
 
-setInterval(() => {
-  hunger--;
-  update();
-}, 5000);
+function updateInv() {
+  document.getElementById('inv').textContent =
+    `Detektor: ${detector} | Glitzer: ${sparkle} | Wohnwagen: ${caravan}`;
+}
+
+setInterval(() => { hunger--; update(); }, 5000);
 
 // ---------- Leaderboard ----------
 async function saveHighscore(score) {
